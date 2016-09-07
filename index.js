@@ -72,12 +72,17 @@ class Board {
     coinChain.forEach( (c) => this.removeCoin(c) );
     this._gravity();
 
-    // TODO: track score
     this.score += coinChain.length * 10
     this._updateScore();
 
     this.turn++;
-    if (this.turn % 3 == 0) { this._addRow(); }
+    if (this.turn % 3 == 0) { 
+      if (this._anyRowAtPeak()) {
+        alert('GAME OVER');
+      } else {
+        this._addRow();
+      }
+    }
 
     this._reDrawCoins();
   }
@@ -149,6 +154,10 @@ class Board {
       column.shift();
       column.push(new Coin(this, this._randomColor(), x, 0));
     });
+  }
+
+  _anyRowAtPeak() {
+    return this.coins.some((column) => column.filter((element) => !_.isNull(element)).length == this.rows);
   }
 
   _updateScore() {
