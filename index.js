@@ -1,25 +1,30 @@
+'use strict';
+
 // create a wrapper around native canvas element (with id="c")
 var canvas = new fabric.Canvas('canvas');
 
-function Coin(row, column) {
-  var self = this;
-  self.canvasObject = null;
+class Coin {
+  constructor(row, column) {
+    this.canvasObject = null;
+    this.row = row;
+    this.column = column;
+  }
 
-  this.draw = function() {
-    self.canvasObject = new fabric.Circle({
-      left: row * 50,
-      top: column * 50,
+  draw() {
+    this.canvasObject = new fabric.Circle({
+      left: this.row * 50,
+      top: this.column * 50,
       fill: 'red',
       radius: 20
     });
 
-    canvas.add(self.canvasObject);
+    canvas.add(this.canvasObject);
   }
 }
 
-a = new Coin(1, 1);
-b = new Coin(1, 2);
-c = new Coin(1, 3);
+var a = new Coin(1, 1);
+var b = new Coin(1, 2);
+var c = new Coin(1, 3);
 a.draw();
 b.draw();
 c.draw();
