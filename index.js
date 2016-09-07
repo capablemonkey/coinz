@@ -61,31 +61,36 @@ class Board {
   }
 
   clickCoin(coin) {
-    console.log(coin);
-    var adjacentCoins = this._findAdjacentCoins(coin);
+    var coinChain = this._findCoinChain(coin, [], []);
 
-    coin.remove();
-    adjacentCoins.forEach( (c) => c.remove() );
+    if (coinChain.length < 3) { return false; }
+
+    console.log(coinChain)
+    coinChain.forEach( (c) => c.remove() );
   }
 
   _randomColor() {
     return _.sample(_.values(COLORS));
   }
 
-  _findAdjacentCoins(coin, coinsSoFar) {
-    var adjacentCoins = [];
+  // Use depth-first search to find the biggest chain of consecutive coins.
+  _findCoinChain(coin, coinsVisitedSoFar, chain) {
+    if (_.contains(coinsVisitedSoFar, coin)) { return null; }
+
+    chain.push(coin);
+    coinsVisitedSoFar.push(coin);
 
     var above = this._getCoinAt(coin.row, coin.column - 1);
     var below = this._getCoinAt(coin.row, coin.column + 1);
     var left = this._getCoinAt(coin.row - 1, coin.column);
     var right = this._getCoinAt(coin.row + 1, coin.column);
 
-    if (this._sameColorCoins(coin, above)) { adjacentCoins.push(above); }
-    if (this._sameColorCoins(coin, below)) { adjacentCoins.push(below); }
-    if (this._sameColorCoins(coin, left)) { adjacentCoins.push(left); }
-    if (this._sameColorCoins(coin, right)) { adjacentCoins.push(right); }
+    if (this._sameColorCoins(coin, above)) { this._findCoinChain(above, coinsVisitedSoFar, chain); }
+    if (this._sameColorCoins(coin, below)) { this._findCoinChain(below, coinsVisitedSoFar, chain); }
+    if (this._sameColorCoins(coin, left)) { this._findCoinChain(left, coinsVisitedSoFar, chain); }
+    if (this._sameColorCoins(coin, right)) { this._findCoinChain(right, coinsVisitedSoFar, chain); }
 
-    return adjacentCoins;
+    return chain;
   }
 
   _getCoinAt(row, column) {
