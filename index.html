@@ -9,35 +9,9 @@
   <h1>coinz</h1>
 
   <div class="container">
-    <canvas width="500" height="500" id="c"></canvas>
+    <canvas width="500" height="500" id="canvas"></canvas>
   </div>
 
-  <script>
-    // create a wrapper around native canvas element (with id="c")
-    var canvas = new fabric.Canvas('c');
-
-    function Coin(row, column) {
-      var self = this;
-      self.canvasObject = null;
-
-      this.draw = function() {
-        self.canvasObject = new fabric.Circle({
-          left: row * 50,
-          top: column * 50,
-          fill: 'red',
-          radius: 20
-        });
-
-        canvas.add(self.canvasObject);
-      }
-    }
-
-    a = new Coin(1, 1);
-    b = new Coin(1, 2);
-    c = new Coin(1, 3);
-    a.draw();
-    b.draw();
-    c.draw();
-  </script>
+  <script src="./index.js" type="text/javascript" charset="utf-8"></script>
 </body>
 </html>
