@@ -1,6 +1,6 @@
 # coinz
 
-a html5 canvas game: http://coinz.gordon.org
+a html5 canvas game: https://coinz.gordn.org
 
 ## TODO:
 
