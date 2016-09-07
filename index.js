@@ -72,26 +72,32 @@ class Board {
     return _.sample(_.values(COLORS));
   }
 
-  _findAdjacentCoins(coin) {
+  _findAdjacentCoins(coin, coinsSoFar) {
     var adjacentCoins = [];
 
-    if ((coin.row + 1 < this.rows) && this.coins[coin.row + 1][coin.column].color === coin.color) {
-      adjacentCoins.push(this.coins[coin.row + 1][coin.column]);
-    }
+    var above = this._getCoinAt(coin.row, coin.column - 1);
+    var below = this._getCoinAt(coin.row, coin.column + 1);
+    var left = this._getCoinAt(coin.row - 1, coin.column);
+    var right = this._getCoinAt(coin.row + 1, coin.column);
 
-    if ((coin.row - 1 >= 0) && this.coins[coin.row - 1][coin.column].color === coin.color) {
-      adjacentCoins.push(this.coins[coin.row - 1][coin.column]);
-    }
-
-    if ((coin.column + 1 < this.columns) && this.coins[coin.row][coin.column + 1].color === coin.color) {
-      adjacentCoins.push(this.coins[coin.row][coin.column + 1]);
-    }
-
-    if ((coin.column - 1 >= 0) && this.coins[coin.row][coin.column - 1].color === coin.color) {
-      adjacentCoins.push(this.coins[coin.row][coin.column - 1]);
-    }
+    if (this._sameColorCoins(coin, above)) { adjacentCoins.push(above); }
+    if (this._sameColorCoins(coin, below)) { adjacentCoins.push(below); }
+    if (this._sameColorCoins(coin, left)) { adjacentCoins.push(left); }
+    if (this._sameColorCoins(coin, right)) { adjacentCoins.push(right); }
 
     return adjacentCoins;
+  }
+
+  _getCoinAt(row, column) {
+    if (row >= this.rows || row < 0 || column >= this.columns || column < 0) {
+      return null;
+    };
+    return this.coins[row][column];
+  }
+
+  _sameColorCoins(coinA, coinB) {
+    if (_.isNull(coinA) || _.isNull(coinB)) { return false; };
+    return coinA.color === coinB.color;
   }
 }
 
