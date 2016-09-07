@@ -41,6 +41,7 @@ class Coin {
   }
 
   remove() {
+    if (_.isNull(this.canvasObject)) { return; }
     this.canvasObject.remove();
   }
 }
@@ -50,20 +51,15 @@ class Board {
     this.rows = rows;
     this.columns = columns;
 
-    this.coins = Array(rows); // 2D array: coins[x][y]
+    // 2D array: coins[x][y]
+    this.coins = Array(rows).fill(null).map(() => new Array(columns).fill(null)); 
   }
 
   initialize() {
-    // TODO: consider using map here?
-    for (var x = 0; x < this.columns; x++) {
-      this.coins[x] = [];
-
-      for (var y = 0; y < this.rows; y++) {
-        var coin = new Coin(this, this._randomColor(), x, y);
-        this.coins[x].push(coin);
-        coin.draw();
-      }
-    }
+    this._addRow();
+    this._addRow();
+    this._addRow();
+    this._reDrawCoins();
   }
 
   // Main player action: drives change in the board.
@@ -139,6 +135,14 @@ class Board {
   _sameColorCoins(coinA, coinB) {
     if (_.isNull(coinA) || _.isNull(coinB)) { return false; };
     return coinA.color === coinB.color;
+  }
+
+  // Warning: does not check to see if top coin is non null
+  _addRow() {
+    this.coins.forEach((column, x) => {
+      column.shift();
+      column.push(new Coin(this, this._randomColor(), x, 0));
+    });
   }
 
   removeCoin(coin) {
