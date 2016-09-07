@@ -5,7 +5,7 @@ const COLORS = {
   BLUE: 'blue',
   GREEN: 'green',
   YELLOW: 'yellow'
-}
+};
 
 // create a wrapper around native canvas element (with id="c")
 var canvas = new fabric.Canvas('canvas');
@@ -30,9 +30,31 @@ class Coin {
   }
 }
 
-var a = new Coin(COLORS.RED, 1, 1);
-var b = new Coin(COLORS.BLUE, 1, 2);
-var c = new Coin(COLORS.GREEN, 1, 3);
+class Board {
+  constructor(rows, columns) {
+    this.rows = rows;
+    this.columns = columns;
 
-var circles = [a, b, c]
-circles.forEach((c) => c.draw())
+    this.coins = Array(rows); // 2D array: coins[x][y]
+  }
+
+  initialize() {
+    // TODO: consider using map here?
+    for (var x = 0; x < this.rows; x++) {
+      this.coins[x] = [];
+
+      for (var y = 0; y < this.columns; y++) {
+        var coin = new Coin(this._randomColor(), x, y);
+        this.coins[x].push(coin);
+        coin.draw();
+      }
+    }
+  }
+
+  _randomColor() {
+    return _.sample(_.values(COLORS));
+  }
+}
+
+var board = new Board(8, 8);
+board.initialize();
