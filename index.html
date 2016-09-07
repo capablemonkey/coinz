@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>coinz</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.6.4/fabric.min.js" type="text/javascript" charset="utf-8"></script>
+  <link rel="stylesheet" type="text/css" href="./style.css">
+</head>
+<body>
+  <h1>coinz</h1>
+
+  <div class="container">
+    <canvas width="500" height="500" id="c"></canvas>
+  </div>
+
+  <script>
+    // create a wrapper around native canvas element (with id="c")
+    var canvas = new fabric.Canvas('c');
+
+    function Coin(row, column) {
+      this.x = row * 50;
+      this.y = column * 50;
+
+      this.draw = function() {
+        var coin = new fabric.Circle({
+          left: row * 50,
+          top: column * 50,
+          fill: 'red',
+          radius: 20
+        });
+
+        canvas.add(coin);
+      }
+    }
+
+    a = new Coin(1, 1);
+    b = new Coin(1, 2);
+    c = new Coin(1, 3);
+    a.draw();
+    b.draw();
+    c.draw();
+  </script>
+</body>
+</html>
