@@ -17,18 +17,18 @@
     var canvas = new fabric.Canvas('c');
 
     function Coin(row, column) {
-      this.x = row * 50;
-      this.y = column * 50;
+      var self = this;
+      self.canvasObject = null;
 
       this.draw = function() {
-        var coin = new fabric.Circle({
+        self.canvasObject = new fabric.Circle({
           left: row * 50,
           top: column * 50,
           fill: 'red',
           radius: 20
         });
 
-        canvas.add(coin);
+        canvas.add(self.canvasObject);
       }
     }
 
