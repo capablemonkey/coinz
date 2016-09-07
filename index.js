@@ -62,11 +62,36 @@ class Board {
 
   clickCoin(coin) {
     console.log(coin);
+    var adjacentCoins = this._findAdjacentCoins(coin);
+
     coin.remove();
+    adjacentCoins.forEach( (c) => c.remove() );
   }
 
   _randomColor() {
     return _.sample(_.values(COLORS));
+  }
+
+  _findAdjacentCoins(coin) {
+    var adjacentCoins = [];
+
+    if ((coin.row + 1 < this.rows) && this.coins[coin.row + 1][coin.column].color === coin.color) {
+      adjacentCoins.push(this.coins[coin.row + 1][coin.column]);
+    }
+
+    if ((coin.row - 1 >= 0) && this.coins[coin.row - 1][coin.column].color === coin.color) {
+      adjacentCoins.push(this.coins[coin.row - 1][coin.column]);
+    }
+
+    if ((coin.column + 1 < this.columns) && this.coins[coin.row][coin.column + 1].color === coin.color) {
+      adjacentCoins.push(this.coins[coin.row][coin.column + 1]);
+    }
+
+    if ((coin.column - 1 >= 0) && this.coins[coin.row][coin.column - 1].color === coin.color) {
+      adjacentCoins.push(this.coins[coin.row][coin.column - 1]);
+    }
+
+    return adjacentCoins;
   }
 }
 
