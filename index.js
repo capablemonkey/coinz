@@ -51,6 +51,7 @@ class Board {
     this.rows = rows;
     this.columns = columns;
     this.turn = 0;
+    this.score = 0;
 
     // 2D array: coins[x][y]
     this.coins = Array(columns).fill(null).map(() => new Array(rows).fill(null));
@@ -59,6 +60,7 @@ class Board {
   initialize(rowsToCreate) {
     _(rowsToCreate).times( () => this._addRow() )
     this._reDrawCoins();
+    this._updateScore();
   }
 
   // Main player action: drives change in the board.
@@ -71,6 +73,8 @@ class Board {
     this._gravity();
 
     // TODO: track score
+    this.score += coinChain.length * 10
+    this._updateScore();
 
     this.turn++;
     if (this.turn % 3 == 0) { this._addRow(); }
@@ -145,6 +149,10 @@ class Board {
       column.shift();
       column.push(new Coin(this, this._randomColor(), x, 0));
     });
+  }
+
+  _updateScore() {
+    document.getElementById('score').innerHTML = this.score;
   }
 
   removeCoin(coin) {
