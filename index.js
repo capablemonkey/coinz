@@ -47,32 +47,34 @@ class Coin {
 }
 
 class Board {
-  constructor(rows, columns) {
+  constructor(columns, rows) {
     this.rows = rows;
     this.columns = columns;
+    this.turn = 0;
 
     // 2D array: coins[x][y]
-    this.coins = Array(rows).fill(null).map(() => new Array(columns).fill(null)); 
+    this.coins = Array(columns).fill(null).map(() => new Array(rows).fill(null));
   }
 
-  initialize() {
-    this._addRow();
-    this._addRow();
-    this._addRow();
+  initialize(rowsToCreate) {
+    _(rowsToCreate).times( () => this._addRow() )
     this._reDrawCoins();
   }
 
   // Main player action: drives change in the board.
   clickCoin(coin) {
     var coinChain = this._findCoinChain(coin, [], []);
-
     if (coinChain.length < 3) { return false; }
 
+    // Remove coins:
     coinChain.forEach( (c) => this.removeCoin(c) );
-
-    console.dir(this.coins)
-
     this._gravity();
+
+    // TODO: track score
+
+    this.turn++;
+    if (this.turn % 3 == 0) { this._addRow(); }
+
     this._reDrawCoins();
   }
 
@@ -115,10 +117,10 @@ class Board {
 
   // Make coins fall down when there are empty spaces (null elements) in in between coins in a column
   _gravity() {
-    for (var x = 0; x < this.rows; x++) {
+    for (var x = 0; x < this.columns; x++) {
       var columnCondensed = this.coins[x].reverse().filter((element) => !_.isNull(element));
       // replace nulls:
-      columnCondensed = columnCondensed.concat(Array(this.columns - columnCondensed.length).fill(null))
+      columnCondensed = columnCondensed.concat(Array(this.columns - columnCondensed.length + 1).fill(null))
       this.coins[x] = columnCondensed.reverse();
     }
   }
@@ -151,5 +153,5 @@ class Board {
   }
 }
 
-var board = new Board(8, 8);
-board.initialize();
+var board = new Board(14, 15);
+board.initialize(5);
