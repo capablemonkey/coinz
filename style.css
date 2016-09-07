@@ -1,4 +1,10 @@
 .container {
   border: 2px;
   border-style: solid;
+  width: 700px;
+  height: 750px;
+  padding: 20px;
+}
+
+#canvas {
 }
