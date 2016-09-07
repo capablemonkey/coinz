@@ -24,7 +24,13 @@ class Coin {
       left: this.row * 50,
       top: this.column * 50,
       fill: this.color,
-      radius: 20
+      radius: 20,
+      lockMovementX: true,
+      lockMovementY: true,
+      lockScalingX: true,
+      lockScalingY: true,
+      lockUniScaling: true,
+      lockRotation: true
     });
 
     canvas.add(this.canvasObject);
