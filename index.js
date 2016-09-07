@@ -11,7 +11,8 @@ const COLORS = {
 var canvas = new fabric.Canvas('canvas');
 
 class Coin {
-  constructor(color, row, column) {
+  constructor(board, color, row, column) {
+    this.board = board;
     this.color = color;
     this.row = row;
     this.column = column;
@@ -27,6 +28,14 @@ class Coin {
     });
 
     canvas.add(this.canvasObject);
+
+    this.canvasObject.on('mousedown', (options) => {
+      this.board.clickCoin(this);
+    })
+  }
+
+  remove() {
+    this.canvasObject.remove();
   }
 }
 
@@ -44,11 +53,16 @@ class Board {
       this.coins[x] = [];
 
       for (var y = 0; y < this.columns; y++) {
-        var coin = new Coin(this._randomColor(), x, y);
+        var coin = new Coin(this, this._randomColor(), x, y);
         this.coins[x].push(coin);
         coin.draw();
       }
     }
+  }
+
+  clickCoin(coin) {
+    console.log(coin);
+    coin.remove();
   }
 
   _randomColor() {
