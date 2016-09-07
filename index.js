@@ -11,18 +11,18 @@ const COLORS = {
 var canvas = new fabric.Canvas('canvas');
 
 class Coin {
-  constructor(board, color, row, column) {
+  constructor(board, color, column, row) {
     this.board = board;
     this.color = color;
-    this.row = row;
     this.column = column;
+    this.row = row;
     this.canvasObject = null;
   }
 
   draw() {
     this.canvasObject = new fabric.Circle({
-      left: this.row * 50,
-      top: this.column * 50,
+      left: this.column * 50,
+      top: this.row * 50,
       fill: this.color,
       radius: 20,
       lockMovementX: true,
@@ -55,10 +55,10 @@ class Board {
 
   initialize() {
     // TODO: consider using map here?
-    for (var x = 0; x < this.rows; x++) {
+    for (var x = 0; x < this.columns; x++) {
       this.coins[x] = [];
 
-      for (var y = 0; y < this.columns; y++) {
+      for (var y = 0; y < this.rows; y++) {
         var coin = new Coin(this, this._randomColor(), x, y);
         this.coins[x].push(coin);
         coin.draw();
@@ -66,13 +66,18 @@ class Board {
     }
   }
 
+  // Main player action: drives change in the board.
   clickCoin(coin) {
     var coinChain = this._findCoinChain(coin, [], []);
 
     if (coinChain.length < 3) { return false; }
 
-    console.log(coinChain)
-    coinChain.forEach( (c) => c.remove() );
+    coinChain.forEach( (c) => this.removeCoin(c) );
+
+    console.dir(this.coins)
+
+    this._gravity();
+    this._reDrawCoins();
   }
 
   _randomColor() {
@@ -86,10 +91,10 @@ class Board {
     chain.push(coin);
     coinsVisitedSoFar.push(coin);
 
-    var above = this._getCoinAt(coin.row, coin.column - 1);
-    var below = this._getCoinAt(coin.row, coin.column + 1);
-    var left = this._getCoinAt(coin.row - 1, coin.column);
-    var right = this._getCoinAt(coin.row + 1, coin.column);
+    var above = this._getCoinAt(coin.column - 1, coin.row);
+    var below = this._getCoinAt(coin.column + 1, coin.row);
+    var left = this._getCoinAt(coin.column, coin.row - 1);
+    var right = this._getCoinAt(coin.column, coin.row + 1);
 
     if (this._sameColorCoins(coin, above)) { this._findCoinChain(above, coinsVisitedSoFar, chain); }
     if (this._sameColorCoins(coin, below)) { this._findCoinChain(below, coinsVisitedSoFar, chain); }
@@ -99,16 +104,46 @@ class Board {
     return chain;
   }
 
-  _getCoinAt(row, column) {
+  // Draw coins based on their position in the Board's state (this.coins)
+  _reDrawCoins() {
+    this.coins.forEach((coinColumn, x) => {
+      coinColumn.forEach((coin, y) => {
+        if (_.isNull(coin)) { return; }
+        coin.column = x;
+        coin.row = y;
+        coin.remove();
+        coin.draw();
+      })
+    });
+  }
+
+  // Make coins fall down when there are empty spaces (null elements) in in between coins in a column
+  _gravity() {
+    for (var x = 0; x < this.rows; x++) {
+      var columnCondensed = this.coins[x].reverse().filter((element) => !_.isNull(element));
+      // replace nulls:
+      columnCondensed = columnCondensed.concat(Array(this.columns - columnCondensed.length).fill(null))
+      this.coins[x] = columnCondensed.reverse();
+    }
+  }
+
+  // Bounds-safe coin retrieval
+  _getCoinAt(column, row) {
     if (row >= this.rows || row < 0 || column >= this.columns || column < 0) {
       return null;
     };
-    return this.coins[row][column];
+    return this.coins[column][row];
   }
 
+  // Are coinA and coinB the same color?
   _sameColorCoins(coinA, coinB) {
     if (_.isNull(coinA) || _.isNull(coinB)) { return false; };
     return coinA.color === coinB.color;
+  }
+
+  removeCoin(coin) {
+    coin.remove();
+    this.coins[coin.column][coin.row] = null;
   }
 }
 
