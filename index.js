@@ -1,5 +1,7 @@
 'use strict';
 
+// TODO: wrap this in a IIFE
+
 const COLORS = {
   RED: 'red',
   BLUE: 'blue',
@@ -7,11 +9,11 @@ const COLORS = {
   YELLOW: 'yellow'
 };
 
-// create a wrapper around native canvas element (with id="c")
-var canvas = new fabric.Canvas('canvas');
+var stage = new createjs.Stage('canvas');
 
 class Coin {
   constructor(board, color, column, row) {
+    // TODO: maybe board should be global instead of referring to it over and over again.
     this.board = board;
     this.color = color;
     this.column = column;
@@ -20,29 +22,31 @@ class Coin {
   }
 
   draw() {
-    this.canvasObject = new fabric.Circle({
-      left: this.column * 50,
-      top: this.row * 50,
-      fill: this.color,
-      radius: 20,
-      lockMovementX: true,
-      lockMovementY: true,
-      lockScalingX: true,
-      lockScalingY: true,
-      lockUniScaling: true,
-      lockRotation: true
-    });
+    var circle = new createjs.Shape();
 
-    canvas.add(this.canvasObject);
+    circle.
+      graphics.
+      beginFill(this.color).
+      drawCircle(25, 25, 20);
 
-    this.canvasObject.on('mousedown', (options) => {
+    circle.x = this.column * 50;
+    circle.y = this.row * 50;
+
+    stage.addChild(circle);
+
+    circle.addEventListener('mousedown', (event) => {
       this.board.clickCoin(this);
     })
+
+    this.canvasObject = circle;
+
+    // TODO: update the stage only once all the new coin positions are realized.
+    stage.update();
   }
 
   remove() {
     if (_.isNull(this.canvasObject)) { return; }
-    this.canvasObject.remove();
+    stage.removeChild(this.canvasObject);
   }
 }
 
@@ -170,5 +174,8 @@ class Board {
   }
 }
 
-var board = new Board(14, 15);
-board.initialize(5);
+function init() {
+  var board = new Board(14, 15);
+  board.initialize(5);
+}
+
