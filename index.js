@@ -9,7 +9,7 @@ const COLORS = {
   YELLOW: 'yellow'
 };
 
-var stage = new createjs.Stage('canvas');
+const STAGE = new createjs.STAGE('canvas');
 
 class Coin {
   constructor(board, color, column, row) {
@@ -22,7 +22,7 @@ class Coin {
   }
 
   draw() {
-    var circle = new createjs.Shape();
+    let circle = new createjs.Shape();
 
     circle.
       graphics.
@@ -32,7 +32,7 @@ class Coin {
     circle.x = this.column * 50;
     circle.y = this.row * 50;
 
-    stage.addChild(circle);
+    STAGE.addChild(circle);
 
     circle.addEventListener('mousedown', (event) => {
       this.board.clickCoin(this);
@@ -41,12 +41,12 @@ class Coin {
     this.canvasObject = circle;
 
     // TODO: update the stage only once all the new coin positions are realized.
-    stage.update();
+    STAGE.update();
   }
 
   remove() {
     if (_.isNull(this.canvasObject)) { return; }
-    stage.removeChild(this.canvasObject);
+    STAGE.removeChild(this.canvasObject);
   }
 }
 
@@ -69,7 +69,7 @@ class Board {
 
   // Main player action: drives change in the board.
   clickCoin(coin) {
-    var coinChain = this._findCoinChain(coin, [], []);
+    let coinChain = this._findCoinChain(coin, [], []);
     if (coinChain.length < 3) { return false; }
 
     // Remove coins:
@@ -130,8 +130,8 @@ class Board {
 
   // Make coins fall down when there are empty spaces (null elements) in in between coins in a column
   _gravity() {
-    for (var x = 0; x < this.columns; x++) {
-      var columnCondensed = this.coins[x].reverse().filter((element) => !_.isNull(element));
+    for (let x = 0; x < this.columns; x++) {
+      let columnCondensed = this.coins[x].reverse().filter((element) => !_.isNull(element));
       // replace nulls:
       columnCondensed = columnCondensed.concat(Array(this.columns - columnCondensed.length + 1).fill(null))
       this.coins[x] = columnCondensed.reverse();
@@ -175,7 +175,7 @@ class Board {
 }
 
 function init() {
-  var board = new Board(14, 15);
+  let board = new Board(14, 15);
   board.initialize(5);
 }
 
