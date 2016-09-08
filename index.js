@@ -9,7 +9,7 @@ const COLORS = {
   YELLOW: 'yellow'
 };
 
-const STAGE = new createjs.STAGE('canvas');
+const STAGE = new createjs.Stage('canvas');
 
 class Coin {
   constructor(board, color, column, row) {

@@ -9,5 +9,5 @@ a html5 canvas game: https://coinz.gordn.org
 - exponential bonus score for big groups
 - add timer mode
 - add animations for falling coins
-- find another framework which doesn't show a bounding box around objects
 - play again button
+- make the canvas scale based on viewing resolution
