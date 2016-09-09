@@ -11,52 +11,117 @@
   const COIN_PIXEL_OFFSET = 50;
   const STAGE = new createjs.Stage('canvas');
 
+  const LEVEL_THRESHOLD = {
+    1: 3,
+    2: 4,
+    3: 4,
+    4: 5
+  };
+
+  const LEVEL_COIN_COLORS = {
+    1: 3,
+    2: 4,
+    3: 5,
+    4: 5
+  };
+
+  class Game {
+    constructor() {
+      this.level = 1;
+      this.score = 0;
+      this.stars = 0;
+    }
+
+    collectStar() {
+      this.stars++;
+      if (this.stars >= LEVEL_THRESHOLD[this.level]) {
+        return this.nextLevel();
+      }
+      this._updateStats();
+    }
+
+    nextLevel() {
+      this.level++;
+      this.stars = 0;
+      alert('new level!  ${this.level}');
+      this._updateStats();
+    }
+
+    incrementScore(amount) {
+      this.score += amount;
+      this._updateStats();
+    }
+
+    _updateStats() {
+      document.getElementById('score').innerHTML = this.score;
+      document.getElementById('level').innerHTML = this.level;
+      document.getElementById('stars').innerHTML = this.stars;
+    }
+  }
+
+  const GAME = new Game();
+
   class Coin {
-    constructor(board, color, column, row) {
+    constructor(color, column, row) {
       // TODO: maybe board should be global instead of referring to it over and over again.
-      this.board = board;
       this.color = color;
       this.column = column;
       this.row = row;
-      this.canvasObject = null;
+      this.shape = new createjs.Shape();
+      this.star = false;
     }
 
     draw() {
-      let circle = new createjs.Shape();
-
-      circle
+      this.shape
         .graphics
         .beginFill(this.color)
         .drawCircle(25, 25, 20);
 
-      circle.x = this.column * COIN_PIXEL_OFFSET;
-      circle.y = this.row * COIN_PIXEL_OFFSET;
-
-      STAGE.addChild(circle);
-
-      circle.addEventListener('mousedown', event => {
-        this.board.clickCoin(this);
+      this.shape.addEventListener('mousedown', event => {
+        BOARD.clickCoin(this);
       });
 
-      this.canvasObject = circle;
-
-      // TODO: update the stage only once all the new coin positions are realized.
-      STAGE.update();
+      this._addToStage();
     }
 
     move(column, row) {
       this.column = column;
       this.row = row;
 
-      createjs.Tween.get(this.canvasObject)
+      createjs.Tween.get(this.shape)
         .to({x: column * COIN_PIXEL_OFFSET, y: row * COIN_PIXEL_OFFSET}, 100);
     }
 
     remove() {
-      if (_.isNull(this.canvasObject)) {
+      if (_.isNull(this.shape)) {
         return;
       }
-      STAGE.removeChild(this.canvasObject);
+      STAGE.removeChild(this.shape);
+    }
+
+    _addToStage() {
+      this.shape.x = this.column * COIN_PIXEL_OFFSET;
+      this.shape.y = this.row * COIN_PIXEL_OFFSET;
+
+      // TODO: update the stage only once all the new coin positions are realized.
+      STAGE.addChild(this.shape);
+      STAGE.update();
+    }
+  }
+
+  class Star extends Coin {
+    constructor(column, row) {
+      super('purple', column, row);
+      this.star = true;
+    }
+
+    draw() {
+      this.shape
+        .graphics
+        .beginFill(this.color)
+        .drawPolyStar(25, 25, 20, 5, 0.5, 0.5);
+
+      this._addToStage();
     }
   }
 
@@ -65,7 +130,6 @@
       this.rows = rows;
       this.columns = columns;
       this.turn = 0;
-      this.score = 0;
 
       // 2D array: coins[x][y]
       this.coins = Array(columns).fill(null).map(() => new Array(rows).fill(null));
@@ -74,7 +138,6 @@
     initialize(rowsToCreate) {
       _(rowsToCreate).times(() => this._addRow());
       this._drawCoins();
-      this._updateScore();
     }
 
     // Main player action: drives change in the board.
@@ -84,14 +147,18 @@
         return false;
       }
 
+      // Pop any stars above:
+      coinChain.forEach(c => this._popStarAbove(c));
+
       // Remove coins:
       coinChain.forEach(c => this.removeCoin(c));
+
       this._gravity();
 
-      this.score += coinChain.length * 10;
-      this._updateScore();
+      GAME.incrementScore(coinChain.length * 10);
 
       this.turn++;
+
       if (this.turn % 3 === 0) {
         if (this._anyRowAtPeak()) {
           alert('GAME OVER');
@@ -100,7 +167,17 @@
         }
       }
 
+      this._addStarToColumn(_.random(0, this.columns - 1));
+
       this._moveCoins();
+    }
+
+    _addStarToColumn(column) {
+      let topOfColumn = this.coins[column].lastIndexOf(null);
+
+      let star = new Star(column, 0);
+      star.draw();
+      this.coins[column][topOfColumn] = star;
     }
 
     _randomColor() {
@@ -145,7 +222,6 @@
           if (_.isNull(coin)) {
             return;
           }
-          // if (_.isNull(coin.canvasObject)) { return coin.draw(); }
           if (coin.column === x && coin.row === y) {
             return;
           }
@@ -198,6 +274,11 @@
       if (_.isNull(coinA) || _.isNull(coinB)) {
         return false;
       }
+
+      if (coinA.star === true || coinB.star === true) {
+        return false;
+      }
+
       return coinA.color === coinB.color;
     }
 
@@ -206,7 +287,7 @@
     _addRow() {
       this.coins.forEach((column, x) => {
         column.shift();
-        let newCoin = new Coin(this,
+        let newCoin = new Coin(
           this._randomColor(), x, (this.rows + 1) * COIN_PIXEL_OFFSET);
         column.push(newCoin);
         newCoin.draw();
@@ -219,8 +300,19 @@
           element => !_.isNull(element)).length === this.rows);
     }
 
-    _updateScore() {
-      document.getElementById('score').innerHTML = this.score;
+    _popStarAbove(coin) {
+      let above = this._getCoinAt(coin.column, coin.row - 1);
+
+      if (_.isNull(above)) {
+        return;
+      }
+
+      console.log(above);
+
+      if (above.star === true) {
+        GAME.collectStar();
+        this.removeCoin(above);
+      }
     }
 
     removeCoin(coin) {
@@ -229,12 +321,14 @@
     }
   }
 
+  const BOARD = new Board(14, 15);
+  window.board = BOARD; // debugging
+
   function init() {
     createjs.Ticker.setFPS(60);
     createjs.Ticker.addEventListener("tick", STAGE);
 
-    let board = new Board(14, 15);
-    board.initialize(5);
+    BOARD.initialize(5);
   }
 
   init();

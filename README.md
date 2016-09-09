@@ -16,6 +16,8 @@ a html5 canvas game: https://coinz.gordn.org
 - add score assets
 - add animation for coin click
 - add animation for score increase
+- highlight coin groups on mouse over
+- refactor coordinate system to use bottom left origin = (0,0)
 
 done:
 
