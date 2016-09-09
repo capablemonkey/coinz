@@ -10,6 +10,7 @@
 
   const COIN_PIXEL_OFFSET = 50;
   const STAGE = new createjs.Stage('canvas');
+  const HEIGHT = 700;
 
   const LEVEL_THRESHOLD = {
     1: 3,
@@ -89,7 +90,7 @@
       this.row = row;
 
       createjs.Tween.get(this.shape)
-        .to({x: column * COIN_PIXEL_OFFSET, y: row * COIN_PIXEL_OFFSET}, 100);
+        .to({x: column * COIN_PIXEL_OFFSET, y: HEIGHT - row * COIN_PIXEL_OFFSET}, 100);
     }
 
     remove() {
@@ -101,7 +102,7 @@
 
     _addToStage() {
       this.shape.x = this.column * COIN_PIXEL_OFFSET;
-      this.shape.y = this.row * COIN_PIXEL_OFFSET;
+      this.shape.y = HEIGHT - this.row * COIN_PIXEL_OFFSET;
 
       // TODO: update the stage only once all the new coin positions are realized.
       STAGE.addChild(this.shape);
@@ -175,9 +176,9 @@
     }
 
     _addStarToColumn(column) {
-      let topOfColumn = this.coins[column].lastIndexOf(null);
+      let topOfColumn = this.coins[column].indexOf(null);
 
-      let star = new Star(column, 0);
+      let star = new Star(column, topOfColumn);
       star.draw();
       this.coins[column][topOfColumn] = star;
     }
@@ -195,8 +196,8 @@
       chain.push(coin);
       coinsVisitedSoFar.push(coin);
 
-      var above = this._getCoinAt(coin.column - 1, coin.row);
-      var below = this._getCoinAt(coin.column + 1, coin.row);
+      var above = this._getCoinAt(coin.column + 1, coin.row);
+      var below = this._getCoinAt(coin.column - 1, coin.row);
       var left = this._getCoinAt(coin.column, coin.row - 1);
       var right = this._getCoinAt(coin.column, coin.row + 1);
 
@@ -251,15 +252,13 @@
     _gravity() {
       for (let x = 0; x < this.columns; x++) {
         let columnCondensed = this.coins[x]
-          .reverse()
           .filter(element => !_.isNull(element));
 
         // replace nulls:
         columnCondensed = columnCondensed
-          .concat(Array(this.columns - columnCondensed.length + 1)
-          .fill(null));
+          .concat(Array(this.rows - columnCondensed.length).fill(null));
 
-        this.coins[x] = columnCondensed.reverse();
+        this.coins[x] = columnCondensed;
       }
     }
 
@@ -288,9 +287,9 @@
     // Add new row from bottom
     _addRow() {
       this.coins.forEach((column, x) => {
-        column.shift();
-        let newCoin = new Coin(this._randomColor(), x, this.rows);
-        column.push(newCoin);
+        column.pop();
+        let newCoin = new Coin(this._randomColor(), x, 0);
+        column.unshift(newCoin);
         newCoin.draw();
       });
     }
@@ -302,7 +301,7 @@
     }
 
     _popStarAbove(coin) {
-      let above = this._getCoinAt(coin.column, coin.row - 1);
+      let above = this._getCoinAt(coin.column, coin.row + 1);
 
       if (_.isNull(above)) {
         return;
