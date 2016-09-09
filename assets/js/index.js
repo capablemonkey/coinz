@@ -75,7 +75,6 @@
 
   class Coin {
     constructor(color, column, row) {
-      // TODO: maybe board should be global instead of referring to it over and over again.
       this.color = color;
       this.column = column;
       this.row = row;
@@ -101,7 +100,7 @@
       this.row = row;
 
       createjs.Tween.get(this.shape)
-        .to({x: column * COIN_PIXEL_OFFSET, y: HEIGHT - row * COIN_PIXEL_OFFSET}, 100);
+        .to({x: this.pixelX(), y: this.pixelY()}, 250);
     }
 
     remove() {
@@ -112,12 +111,20 @@
     }
 
     _addToStage() {
-      this.shape.x = this.column * COIN_PIXEL_OFFSET;
-      this.shape.y = HEIGHT - this.row * COIN_PIXEL_OFFSET;
+      this.shape.x = this.pixelX();
+      this.shape.y = this.pixelY();
 
       // TODO: update the stage only once all the new coin positions are realized.
       STAGE.addChild(this.shape);
       STAGE.update();
+    }
+
+    pixelX() {
+      return this.column * COIN_PIXEL_OFFSET;
+    }
+
+    pixelY() {
+      return HEIGHT - this.row * COIN_PIXEL_OFFSET;
     }
   }
 
