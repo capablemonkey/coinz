@@ -167,7 +167,9 @@
         }
       }
 
-      this._addStarToColumn(_.random(0, this.columns - 1));
+      if (_.random(0, 100) <= 34) {
+        this._addStarToColumn(_.random(0, this.columns - 1));
+      }
 
       this._moveCoins();
     }
