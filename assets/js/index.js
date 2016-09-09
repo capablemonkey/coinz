@@ -1,6 +1,10 @@
 (function() {
   'use strict';
 
+  const ROWS = 15;
+  const COLUMNS = 14;
+  const STARTING_ROWS = 5;
+
   const COLORS = {
     RED: 'red',
     BLUE: 'blue',
@@ -45,6 +49,9 @@
       this.level++;
       this.stars = 0;
       alert('new level!  ${this.level}');
+      $board.destroy();
+      $board = new Board(COLUMNS, ROWS);
+      $board.initialize(STARTING_ROWS);
       this._updateStats();
     }
 
@@ -79,7 +86,7 @@
         .drawCircle(25, 25, 20);
 
       this.shape.addEventListener('mousedown', event => {
-        BOARD.clickCoin(this);
+        $board.clickCoin(this);
       });
 
       this._addToStage();
@@ -319,18 +326,23 @@
       coin.remove();
       this.coins[coin.column][coin.row] = null;
     }
+
+    destroy() {
+      STAGE.removeAllChildren();
+    }
   }
 
-  const BOARD = new Board(14, 15);
+  var $board = new Board(COLUMNS, ROWS);
   
-  window.board = BOARD; // debugging
+  window.board = $board; // debugging
+  window.game = GAME; // debugging
   window.stage = STAGE;
 
   function init() {
     createjs.Ticker.setFPS(60);
     createjs.Ticker.addEventListener("tick", STAGE);
 
-    BOARD.initialize(5);
+    $board.initialize(STARTING_ROWS);
   }
 
   init();
