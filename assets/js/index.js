@@ -9,7 +9,9 @@
     RED: 'red',
     BLUE: 'blue',
     GREEN: 'green',
-    YELLOW: 'gold'
+    YELLOW: 'gold',
+    GREY: 'grey',
+    BLACK: 'black'
   };
 
   const COIN_PIXEL_OFFSET = 50;
@@ -48,9 +50,9 @@
     nextLevel() {
       this.level++;
       this.stars = 0;
-      alert('new level!  ${this.level}');
+
       $board.destroy();
-      $board = new Board(COLUMNS, ROWS);
+      $board = new Board(COLUMNS, ROWS, this.level);
       $board.initialize(STARTING_ROWS);
       this._updateStats();
     }
@@ -134,10 +136,11 @@
   }
 
   class Board {
-    constructor(columns, rows) {
+    constructor(columns, rows, level) {
       this.rows = rows;
       this.columns = columns;
       this.turn = 0;
+      this.coinColors = _.values(COLORS).slice(0, LEVEL_COIN_COLORS[level]);
 
       // 2D array: coins[x][y]
       this.coins = Array(columns).fill(null).map(() => new Array(rows).fill(null));
@@ -191,7 +194,7 @@
     }
 
     _randomColor() {
-      return _.sample(_.values(COLORS));
+      return _.sample(_.values(this.coinColors));
     }
 
     // Use depth-first search to find the biggest chain of consecutive coins.
@@ -314,8 +317,6 @@
         return;
       }
 
-      console.log(above);
-
       if (above.star === true) {
         GAME.collectStar();
         this.removeCoin(above);
@@ -332,8 +333,8 @@
     }
   }
 
-  var $board = new Board(COLUMNS, ROWS);
-  
+  var $board = new Board(COLUMNS, ROWS, 1);
+
   window.board = $board; // debugging
   window.game = GAME; // debugging
   window.stage = STAGE;
