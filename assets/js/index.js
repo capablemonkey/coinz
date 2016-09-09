@@ -16,7 +16,7 @@
 
   const COIN_PIXEL_OFFSET = 50;
   const STAGE = new createjs.Stage('canvas');
-  const HEIGHT = 700;
+  const HEIGHT = 750;
 
   const LEVEL_THRESHOLD = {
     1: 3,
@@ -124,7 +124,7 @@
     }
 
     pixelY() {
-      return HEIGHT - this.row * COIN_PIXEL_OFFSET;
+      return HEIGHT - (this.row + 1) * COIN_PIXEL_OFFSET;
     }
   }
 
