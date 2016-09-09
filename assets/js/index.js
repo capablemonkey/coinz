@@ -215,10 +215,10 @@
       chain.push(coin);
       coinsVisitedSoFar.push(coin);
 
-      var above = this._getCoinAt(coin.column + 1, coin.row);
-      var below = this._getCoinAt(coin.column - 1, coin.row);
-      var left = this._getCoinAt(coin.column, coin.row - 1);
-      var right = this._getCoinAt(coin.column, coin.row + 1);
+      var above = this._getCoinAt(coin.column, coin.row + 1);
+      var below = this._getCoinAt(coin.column, coin.row - 1);
+      var left = this._getCoinAt(coin.column - 1, coin.row);
+      var right = this._getCoinAt(coin.column + 1, coin.row);
 
       if (this._sameColorCoins(coin, above)) {
         this._findCoinChain(above, coinsVisitedSoFar, chain);
