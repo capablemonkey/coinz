@@ -1,6 +1,6 @@
 'use strict';
 
-// TODO: wrap this in a IIFE
+// TODO: wrap this in a IIFE 
 
 const COLORS = {
   RED: 'red',
@@ -28,10 +28,10 @@ class Coin {
   draw() {
     let circle = new createjs.Shape();
 
-    circle.
-      graphics.
-      beginFill(this.color).
-      drawCircle(25, 25, 20);
+    circle
+      .graphics
+      .beginFill(this.color)
+      .drawCircle(25, 25, 20);
 
     circle.x = this.column * COIN_PIXEL_OFFSET;
     circle.y = this.row * COIN_PIXEL_OFFSET;
@@ -40,7 +40,7 @@ class Coin {
 
     circle.addEventListener('mousedown', (event) => {
       this.board.clickCoin(this);
-    })
+    });
 
     this.canvasObject = circle;
 
