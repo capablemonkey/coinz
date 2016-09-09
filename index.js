@@ -6,10 +6,14 @@ const COLORS = {
   RED: 'red',
   BLUE: 'blue',
   GREEN: 'green',
-  YELLOW: 'yellow'
+  YELLOW: 'gold'
 };
 
+const COIN_PIXEL_OFFSET = 50;
+
 const STAGE = new createjs.Stage('canvas');
+createjs.Ticker.setFPS(60);
+createjs.Ticker.addEventListener("tick", STAGE);
 
 class Coin {
   constructor(board, color, column, row) {
@@ -29,8 +33,8 @@ class Coin {
       beginFill(this.color).
       drawCircle(25, 25, 20);
 
-    circle.x = this.column * 50;
-    circle.y = this.row * 50;
+    circle.x = this.column * COIN_PIXEL_OFFSET;
+    circle.y = this.row * COIN_PIXEL_OFFSET;
 
     STAGE.addChild(circle);
 
@@ -42,6 +46,14 @@ class Coin {
 
     // TODO: update the stage only once all the new coin positions are realized.
     STAGE.update();
+  }
+
+  move(column, row) {
+    this.column = column;
+    this.row = row;
+
+    createjs.Tween.get(this.canvasObject)
+      .to({ x: column * COIN_PIXEL_OFFSET, y: row * COIN_PIXEL_OFFSET }, 100);
   }
 
   remove() {
@@ -63,7 +75,7 @@ class Board {
 
   initialize(rowsToCreate) {
     _(rowsToCreate).times( () => this._addRow() )
-    this._reDrawCoins();
+    this._drawCoins();
     this._updateScore();
   }
 
@@ -88,7 +100,7 @@ class Board {
       }
     }
 
-    this._reDrawCoins();
+    this._moveCoins();
   }
 
   _randomColor() {
@@ -115,14 +127,26 @@ class Board {
     return chain;
   }
 
-  // Draw coins based on their position in the Board's state (this.coins)
-  _reDrawCoins() {
+  // Move coins based on their position in the Board's state (this.coins)
+  _moveCoins() {
     this.coins.forEach((coinColumn, x) => {
       coinColumn.forEach((coin, y) => {
+        // nothing to do if this cell is null or coin has no new position:
+        if (_.isNull(coin)) { return; }
+        // if (_.isNull(coin.canvasObject)) { return coin.draw(); }
+        if (coin.column == x && coin.row == y) { return; }
+        coin.move(x, y);
+      })
+    });
+  }
+
+  _drawCoins() {
+    this.coins.forEach((coinColumn, x) => {
+      coinColumn.forEach((coin, y) => {
+        // nothing to do if this cell is null or coin has no new position:
         if (_.isNull(coin)) { return; }
         coin.column = x;
         coin.row = y;
-        coin.remove();
         coin.draw();
       })
     });
@@ -153,10 +177,13 @@ class Board {
   }
 
   // Warning: does not check to see if top coin is non null
+  // Add new row from bottom
   _addRow() {
     this.coins.forEach((column, x) => {
       column.shift();
-      column.push(new Coin(this, this._randomColor(), x, 0));
+      let newCoin = new Coin(this, this._randomColor(), x, (this.rows + 1) * COIN_PIXEL_OFFSET);
+      column.push(newCoin);
+      newCoin.draw();
     });
   }
 
