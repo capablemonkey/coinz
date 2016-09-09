@@ -4,9 +4,6 @@ a html5 canvas game: https://coinz.gordn.org
 
 ## TODO:
 
-- harder levels have more colors
-- stars give bonuses
-- reset board on new level
 - exponential bonus score for big groups
 - add timer mode
 - game type: race against the clock - total game time limit, rows advance every third turn
@@ -27,3 +24,6 @@ done:
 - refactor coordinate system to use bottom left origin = (0,0)
 - stars are used to track level progression
 - levels
+- harder levels have more colors
+- reset board on new level
+- stars give bonuses

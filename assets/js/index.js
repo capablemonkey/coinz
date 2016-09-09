@@ -40,6 +40,8 @@
     }
 
     collectStar() {
+      this.incrementScore(200);
+
       this.stars++;
       if (this.stars >= LEVEL_THRESHOLD[this.level]) {
         return this.nextLevel();
