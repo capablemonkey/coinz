@@ -289,8 +289,7 @@
     _addRow() {
       this.coins.forEach((column, x) => {
         column.shift();
-        let newCoin = new Coin(
-          this._randomColor(), x, (this.rows + 1) * COIN_PIXEL_OFFSET);
+        let newCoin = new Coin(this._randomColor(), x, this.rows);
         column.push(newCoin);
         newCoin.draw();
       });
@@ -324,7 +323,9 @@
   }
 
   const BOARD = new Board(14, 15);
+  
   window.board = BOARD; // debugging
+  window.stage = STAGE;
 
   function init() {
     createjs.Ticker.setFPS(60);
