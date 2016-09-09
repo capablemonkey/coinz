@@ -1,6 +1,6 @@
 'use strict';
 
-// TODO: wrap this in a IIFE 
+// TODO: wrap this in a IIFE
 
 const COLORS = {
   RED: 'red',
@@ -38,7 +38,7 @@ class Coin {
 
     STAGE.addChild(circle);
 
-    circle.addEventListener('mousedown', (event) => {
+    circle.addEventListener('mousedown', event => {
       this.board.clickCoin(this);
     });
 
@@ -53,11 +53,13 @@ class Coin {
     this.row = row;
 
     createjs.Tween.get(this.canvasObject)
-      .to({ x: column * COIN_PIXEL_OFFSET, y: row * COIN_PIXEL_OFFSET }, 100);
+      .to({x: column * COIN_PIXEL_OFFSET, y: row * COIN_PIXEL_OFFSET}, 100);
   }
 
   remove() {
-    if (_.isNull(this.canvasObject)) { return; }
+    if (_.isNull(this.canvasObject)) {
+      return;
+    }
     STAGE.removeChild(this.canvasObject);
   }
 }
@@ -74,7 +76,7 @@ class Board {
   }
 
   initialize(rowsToCreate) {
-    _(rowsToCreate).times( () => this._addRow() )
+    _(rowsToCreate).times(() => this._addRow());
     this._drawCoins();
     this._updateScore();
   }
@@ -82,17 +84,19 @@ class Board {
   // Main player action: drives change in the board.
   clickCoin(coin) {
     let coinChain = this._findCoinChain(coin, [], []);
-    if (coinChain.length < 3) { return false; }
+    if (coinChain.length < 3) {
+      return false;
+    }
 
     // Remove coins:
-    coinChain.forEach( (c) => this.removeCoin(c) );
+    coinChain.forEach(c => this.removeCoin(c));
     this._gravity();
 
-    this.score += coinChain.length * 10
+    this.score += coinChain.length * 10;
     this._updateScore();
 
     this.turn++;
-    if (this.turn % 3 == 0) { 
+    if (this.turn % 3 === 0) {
       if (this._anyRowAtPeak()) {
         alert('GAME OVER');
       } else {
@@ -109,7 +113,9 @@ class Board {
 
   // Use depth-first search to find the biggest chain of consecutive coins.
   _findCoinChain(coin, coinsVisitedSoFar, chain) {
-    if (_.contains(coinsVisitedSoFar, coin)) { return null; }
+    if (_.contains(coinsVisitedSoFar, coin)) {
+      return null;
+    }
 
     chain.push(coin);
     coinsVisitedSoFar.push(coin);
@@ -119,10 +125,18 @@ class Board {
     var left = this._getCoinAt(coin.column, coin.row - 1);
     var right = this._getCoinAt(coin.column, coin.row + 1);
 
-    if (this._sameColorCoins(coin, above)) { this._findCoinChain(above, coinsVisitedSoFar, chain); }
-    if (this._sameColorCoins(coin, below)) { this._findCoinChain(below, coinsVisitedSoFar, chain); }
-    if (this._sameColorCoins(coin, left)) { this._findCoinChain(left, coinsVisitedSoFar, chain); }
-    if (this._sameColorCoins(coin, right)) { this._findCoinChain(right, coinsVisitedSoFar, chain); }
+    if (this._sameColorCoins(coin, above)) {
+      this._findCoinChain(above, coinsVisitedSoFar, chain);
+    }
+    if (this._sameColorCoins(coin, below)) {
+      this._findCoinChain(below, coinsVisitedSoFar, chain);
+    }
+    if (this._sameColorCoins(coin, left)) {
+      this._findCoinChain(left, coinsVisitedSoFar, chain);
+    }
+    if (this._sameColorCoins(coin, right)) {
+      this._findCoinChain(right, coinsVisitedSoFar, chain);
+    }
 
     return chain;
   }
@@ -132,11 +146,15 @@ class Board {
     this.coins.forEach((coinColumn, x) => {
       coinColumn.forEach((coin, y) => {
         // nothing to do if this cell is null or coin has no new position:
-        if (_.isNull(coin)) { return; }
+        if (_.isNull(coin)) {
+          return;
+        }
         // if (_.isNull(coin.canvasObject)) { return coin.draw(); }
-        if (coin.column == x && coin.row == y) { return; }
+        if (coin.column === x && coin.row === y) {
+          return;
+        }
         coin.move(x, y);
-      })
+      });
     });
   }
 
@@ -144,20 +162,29 @@ class Board {
     this.coins.forEach((coinColumn, x) => {
       coinColumn.forEach((coin, y) => {
         // nothing to do if this cell is null or coin has no new position:
-        if (_.isNull(coin)) { return; }
+        if (_.isNull(coin)) {
+          return;
+        }
         coin.column = x;
         coin.row = y;
         coin.draw();
-      })
+      });
     });
   }
 
-  // Make coins fall down when there are empty spaces (null elements) in in between coins in a column
+  // Make coins fall down when there are empty spaces (null elements) in
+  // between coins in a column
   _gravity() {
     for (let x = 0; x < this.columns; x++) {
-      let columnCondensed = this.coins[x].reverse().filter((element) => !_.isNull(element));
+      let columnCondensed = this.coins[x]
+        .reverse()
+        .filter(element => !_.isNull(element));
+
       // replace nulls:
-      columnCondensed = columnCondensed.concat(Array(this.columns - columnCondensed.length + 1).fill(null))
+      columnCondensed = columnCondensed
+        .concat(Array(this.columns - columnCondensed.length + 1)
+        .fill(null));
+
       this.coins[x] = columnCondensed.reverse();
     }
   }
@@ -166,13 +193,15 @@ class Board {
   _getCoinAt(column, row) {
     if (row >= this.rows || row < 0 || column >= this.columns || column < 0) {
       return null;
-    };
+    }
     return this.coins[column][row];
   }
 
   // Are coinA and coinB the same color?
   _sameColorCoins(coinA, coinB) {
-    if (_.isNull(coinA) || _.isNull(coinB)) { return false; };
+    if (_.isNull(coinA) || _.isNull(coinB)) {
+      return false;
+    }
     return coinA.color === coinB.color;
   }
 
@@ -181,14 +210,17 @@ class Board {
   _addRow() {
     this.coins.forEach((column, x) => {
       column.shift();
-      let newCoin = new Coin(this, this._randomColor(), x, (this.rows + 1) * COIN_PIXEL_OFFSET);
+      let newCoin = new Coin(this,
+        this._randomColor(), x, (this.rows + 1) * COIN_PIXEL_OFFSET);
       column.push(newCoin);
       newCoin.draw();
     });
   }
 
   _anyRowAtPeak() {
-    return this.coins.some((column) => column.filter((element) => !_.isNull(element)).length == this.rows);
+    return this.coins.some(
+      column => column.filter(
+        element => !_.isNull(element)).length === this.rows);
   }
 
   _updateScore() {
@@ -205,4 +237,3 @@ function init() {
   let board = new Board(14, 15);
   board.initialize(5);
 }
-
