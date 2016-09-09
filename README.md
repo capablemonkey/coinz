@@ -4,8 +4,9 @@ a html5 canvas game: https://coinz.gordn.org
 
 ## TODO:
 
-- levels, where harder levels have more colors
-- money bags give bonuses and are used to track level progression
+- harder levels have more colors
+- stars give bonuses
+- reset board on new level
 - exponential bonus score for big groups
 - add timer mode
 - game type: race against the clock - total game time limit, rows advance every third turn
@@ -17,9 +18,12 @@ a html5 canvas game: https://coinz.gordn.org
 - add animation for coin click
 - add animation for score increase
 - highlight coin groups on mouse over
-- refactor coordinate system to use bottom left origin = (0,0)
+
 
 done:
 
 - add animations for coin movement
 - transition from fabric.js to easel.js
+- refactor coordinate system to use bottom left origin = (0,0)
+- stars are used to track level progression
+- levels

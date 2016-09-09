@@ -168,7 +168,7 @@
         }
       }
 
-      if (_.random(0, 100) <= 34) {
+      if (_.random(0, 100) <= 10) {
         this._addStarToColumn(_.random(0, this.columns - 1));
       }
 
