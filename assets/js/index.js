@@ -47,7 +47,7 @@
       if (this.stars >= LEVEL_THRESHOLD[this.level]) {
         return this.nextLevel();
       }
-      this._updateStats();
+      this.updateStats();
     }
 
     nextLevel() {
@@ -57,18 +57,18 @@
       $board.destroy();
       $board = new Board(COLUMNS, ROWS, this.level);
       $board.initialize(STARTING_ROWS);
-      this._updateStats();
+      this.updateStats();
     }
 
     incrementScore(amount) {
       this.score += amount;
-      this._updateStats();
+      this.updateStats();
     }
 
-    _updateStats() {
+    updateStats() {
       document.getElementById('score').innerHTML = this.score;
       document.getElementById('level').innerHTML = this.level;
-      document.getElementById('stars').innerHTML = this.stars;
+      document.getElementById('stars').innerHTML = `${this.stars} out of ${LEVEL_THRESHOLD[this.level]}`;
     }
   }
 
@@ -396,6 +396,7 @@
     STAGE.enableMouseOver(20);
 
     $board.initialize(STARTING_ROWS);
+    GAME.updateStats();
   }
 
   init();
