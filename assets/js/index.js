@@ -16,7 +16,7 @@
 
   const COIN_PIXEL_OFFSET = 50;
   const STAGE = new createjs.Stage('canvas');
-  const HEIGHT = 750;
+  const HEIGHT = 800;
   const WIDTH = 700;
 
   const LEVEL_THRESHOLD = {
@@ -38,6 +38,28 @@
       this.level = 1;
       this.score = 0;
       this.stars = 0;
+
+      this.texts = {
+        score: new createjs.Text(0, "bold 30px Helvetica", "#ff7700"),
+        level: new createjs.Text('lvl 1', "30px Helvetica", "#ff7700"),
+        stars: new createjs.Text('starz', "30px Helvetica", "#ff7700")
+      };
+
+      this.texts.score.x = 10;
+      this.texts.score.y = 30;
+      this.texts.score.textBaseline = "alphabetic";
+
+      this.texts.level.x = 280;
+      this.texts.level.y = 30;
+      this.texts.level.textBaseline = "alphabetic";
+
+      this.texts.stars.x = 550;
+      this.texts.stars.y = 30;
+      this.texts.stars.textBaseline = "alphabetic";
+
+      STAGE.addChild(this.texts.level);
+      STAGE.addChild(this.texts.score);
+      STAGE.addChild(this.texts.stars);
     }
 
     collectStar() {
@@ -57,6 +79,7 @@
       $board.destroy();
       $board = new Board(COLUMNS, ROWS, this.level);
       $board.initialize(STARTING_ROWS);
+      window.board = $board; // todo: debug, remove later
       this.updateStats();
     }
 
@@ -66,9 +89,11 @@
     }
 
     updateStats() {
-      document.getElementById('score').innerHTML = this.score;
-      document.getElementById('level').innerHTML = this.level;
-      document.getElementById('stars').innerHTML = `${this.stars} out of ${LEVEL_THRESHOLD[this.level]}`;
+      this.texts.score.text = this.score;
+      this.texts.level.text = `lvl ${this.level}`;
+      this.texts.stars.text = `${this.stars} / ${LEVEL_THRESHOLD[this.level]} stars`;
+
+      STAGE.update();
     }
   }
 
@@ -197,6 +222,13 @@
 
       // 2D array: coins[x][y]
       this.coins = Array(columns).fill(null).map(() => new Array(rows).fill(null));
+
+      const topBoundary = new createjs.Shape();
+      topBoundary
+        .graphics
+        .beginFill('black')
+        .drawRect(0, 50, 700, 3);
+      STAGE.addChild(topBoundary);
     }
 
     initialize(rowsToCreate) {
@@ -380,7 +412,15 @@
     }
 
     destroy() {
-      STAGE.removeAllChildren();
+      this.coins.forEach((coinColumn, x) => {
+        coinColumn.forEach((coin, y) => {
+          if (_.isNull(coin)) {
+            return;
+          }
+
+          STAGE.removeChild(coin.shape);
+        });
+      });
     }
   }
 
