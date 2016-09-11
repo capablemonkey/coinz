@@ -209,7 +209,7 @@
       let topOfColumn = this.coins[column].indexOf(null);
 
       let star = new Star(column, topOfColumn);
-      star.draw();
+      star.drawAndMove(column, this.rows - 1, column, topOfColumn);
       this.coins[column][topOfColumn] = star;
     }
 
