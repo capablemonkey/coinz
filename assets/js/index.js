@@ -17,6 +17,7 @@
   const COIN_PIXEL_OFFSET = 50;
   const STAGE = new createjs.Stage('canvas');
   const HEIGHT = 750;
+  const WIDTH = 700;
 
   const LEVEL_THRESHOLD = {
     1: 3,
@@ -118,7 +119,13 @@
       if (_.isNull(this.shape)) {
         return;
       }
-      STAGE.removeChild(this.shape);
+      this.shape.removeAllEventListeners();
+
+      createjs.Tween.get(this.shape, {override: true})
+        .to({x: WIDTH + COIN_PIXEL_OFFSET, y: this.pixelY() - 100, alpha: .2}, 100)
+        .call(() => {
+          STAGE.removeChild(this.shape);
+        });
     }
 
     _addToStage() {
