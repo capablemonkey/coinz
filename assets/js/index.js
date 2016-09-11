@@ -98,12 +98,20 @@
       this._addToStage();
     }
 
+    drawAndMove(columnBegin, rowBegin, columnEnd, rowEnd) {
+      this.column = columnBegin;
+      this.row = rowBegin;
+      this.draw();
+
+      this.move(columnEnd, rowEnd);
+    }
+
     move(column, row) {
       this.column = column;
       this.row = row;
 
-      createjs.Tween.get(this.shape)
-        .to({x: this.pixelX(), y: this.pixelY()}, 250);
+      createjs.Tween.get(this.shape, {override:true})
+        .to({x: this.pixelX(), y: this.pixelY()}, 200);
     }
 
     remove() {
@@ -160,7 +168,7 @@
 
     initialize(rowsToCreate) {
       _(rowsToCreate).times(() => this._addRow());
-      this._drawCoins();
+      this._moveCoins();
     }
 
     // Main player action: drives change in the board.
@@ -250,21 +258,8 @@
           if (coin.column === x && coin.row === y) {
             return;
           }
-          coin.move(x, y);
-        });
-      });
-    }
 
-    _drawCoins() {
-      this.coins.forEach((coinColumn, x) => {
-        coinColumn.forEach((coin, y) => {
-          // nothing to do if this cell is null or coin has no new position:
-          if (_.isNull(coin)) {
-            return;
-          }
-          coin.column = x;
-          coin.row = y;
-          coin.draw();
+          coin.move(x, y);
         });
       });
     }
@@ -312,7 +307,7 @@
         column.pop();
         let newCoin = new Coin(this._randomColor(), x, 0);
         column.unshift(newCoin);
-        newCoin.draw();
+        newCoin.drawAndMove(x, -1, x, 0);
       });
     }
 
