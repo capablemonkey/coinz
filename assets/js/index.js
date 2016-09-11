@@ -88,7 +88,10 @@
         .beginFill(this.color)
         .drawCircle(25, 25, 20);
 
-      this.shape.addEventListener('mousedown', event => {
+      // This prevents duplicate click events for one click:
+      this.shape.removeAllEventListeners();
+
+      this.shape.on('click', event => {
         $board.clickCoin(this);
       });
 
