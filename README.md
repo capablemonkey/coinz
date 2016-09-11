@@ -12,10 +12,7 @@ a html5 canvas game: https://coinz.gordn.org
 - make the canvas scale based on viewing resolution
 - add coin assets
 - add score assets
-- add animation for coin click
 - add animation for score increase
-- highlight coin groups on mouse over
-
 
 done:
 
@@ -27,3 +24,5 @@ done:
 - harder levels have more colors
 - reset board on new level
 - stars give bonuses
+- add animation for coin click
+- highlight coin groups on mouse over
