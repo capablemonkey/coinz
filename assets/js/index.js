@@ -431,6 +431,7 @@
   window.stage = STAGE;
 
   function init() {
+    createjs.Touch.enable(STAGE); // so we can detect touch from mobile devices as clicks
     createjs.Ticker.setFPS(60);
     createjs.Ticker.addEventListener("tick", STAGE);
     STAGE.enableMouseOver(20);
