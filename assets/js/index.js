@@ -81,13 +81,11 @@
       this.row = row;
       this.shape = new createjs.Shape();
       this.star = false;
+      this.highlight = false;
     }
 
     draw() {
-      this.shape
-        .graphics
-        .beginFill(this.color)
-        .drawCircle(25, 25, 20);
+      this._makeShape();
 
       // This prevents duplicate click events for one click:
       this.shape.removeAllEventListeners();
@@ -96,7 +94,35 @@
         $board.clickCoin(this);
       });
 
+      this.shape.on('mouseover', event => {
+        $board.toggleHighlightCoinGroup(this);
+      });
+
+      this.shape.on('mouseout', event => {
+        $board.toggleHighlightCoinGroup(this);
+      });
+
       this._addToStage();
+    }
+
+    toggleHighlight() {
+      this.highlight = !this.highlight;
+
+      this.shape.graphics.clear();
+
+      if (this.highlight) {
+        this.shape.graphics
+          .setStrokeStyle(3, "round")
+          .beginStroke('orange');
+      }
+
+      this._makeShape();
+    }
+
+    _makeShape() {
+      this.shape.graphics
+        .beginFill(this.color)
+        .drawCircle(25, 25, 20);
     }
 
     drawAndMove(columnBegin, rowBegin, columnEnd, rowEnd) {
@@ -176,6 +202,17 @@
     initialize(rowsToCreate) {
       _(rowsToCreate).times(() => this._addRow());
       this._moveCoins();
+    }
+
+    toggleHighlightCoinGroup(coin) {
+      let coinChain = this._findCoinChain(coin, [], []);
+
+      if (coinChain.length < 3) {
+        return;
+      }
+
+      coinChain.forEach(c => c.toggleHighlight());
+      STAGE.update();
     }
 
     // Main player action: drives change in the board.
@@ -356,6 +393,7 @@
   function init() {
     createjs.Ticker.setFPS(60);
     createjs.Ticker.addEventListener("tick", STAGE);
+    STAGE.enableMouseOver(20);
 
     $board.initialize(STARTING_ROWS);
   }
