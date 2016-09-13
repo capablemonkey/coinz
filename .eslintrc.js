@@ -3,7 +3,8 @@ module.exports = {
     "globals": {
       "_": true,
       "createjs": true,
-      "document": true
+      "document": true,
+      "window": true
     },
     "env": {
       "es6": true

@@ -14,6 +14,7 @@
     BLACK: 'black'
   };
 
+  const COIN_RADIUS = 23;
   const COIN_PIXEL_OFFSET = 50;
   const STAGE = new createjs.Stage('canvas');
   const HEIGHT = 800;
@@ -147,7 +148,7 @@
     _makeShape() {
       this.shape.graphics
         .beginFill(this.color)
-        .drawCircle(25, 25, 20);
+        .drawCircle(25, 25, COIN_RADIUS);
     }
 
     drawAndMove(columnBegin, rowBegin, columnEnd, rowEnd) {
