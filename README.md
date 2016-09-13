@@ -14,6 +14,7 @@ a html5 canvas game: https://coinz.gordn.org
 - add score assets
 - add animation for score increase
 
+
 done:
 
 - add animations for coin movement
@@ -26,3 +27,21 @@ done:
 - stars give bonuses
 - add animation for coin click
 - highlight coin groups on mouse over
+- break out monolithic index.js into modules
+
+
+## Development
+
+Install dev dependencies:
+
+```
+npm install
+```
+
+Build javascript:
+
+```
+webpack
+```
+
+Then open `index.html`!
