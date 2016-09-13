@@ -235,6 +235,11 @@
     initialize(rowsToCreate) {
       _(rowsToCreate).times(() => this._addRow());
       this._moveCoins();
+
+      // setInterval(() => {
+      //   this._loseOrAddRow();
+      //   this._moveCoins();
+      // }, 3000);
     }
 
     toggleHighlightCoinGroup(coin) {
@@ -268,11 +273,7 @@
       this.turn++;
 
       if (this.turn % 3 === 0) {
-        if (this._anyRowAtPeak()) {
-          alert('GAME OVER');
-        } else {
-          this._addRow();
-        }
+        this._loseOrAddRow();
       }
 
       if (_.random(0, 100) <= 10) {
@@ -280,6 +281,14 @@
       }
 
       this._moveCoins();
+
+    _loseOrAddRow() {
+      if (this._anyRowAtPeak()) {
+        alert('GAME OVER');
+        console.log('GAME OVER');
+      } else {
+        this._addRow();
+      }
     }
 
     _addStarToColumn(column) {
