@@ -281,6 +281,7 @@
       }
 
       this._moveCoins();
+    }
 
     _loseOrAddRow() {
       if (this._anyRowAtPeak()) {
