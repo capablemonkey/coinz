@@ -1,4 +1,4 @@
-var Coin = require('./coin.js');
+const Coin = require('./coin.js');
 
 class Star extends Coin {
   constructor(column, row) {

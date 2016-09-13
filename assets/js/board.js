@@ -1,6 +1,6 @@
-var CONSTANTS = require('./constants.js');
-var Coin = require('./coin.js');
-var Star = require('./star.js');
+const CONSTANTS = require('./constants.js');
+const Coin = require('./coin.js');
+const Star = require('./star.js');
 
 class Board {
   constructor(columns, rows, level) {

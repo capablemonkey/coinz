@@ -48,7 +48,7 @@
 
 	window.stage = new createjs.Stage('canvas');
 
-	var Game = __webpack_require__(1);
+	const Game = __webpack_require__(1);
 
 	window.game = new Game();
 
@@ -68,8 +68,8 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var CONSTANTS = __webpack_require__(2);
-	var Board = __webpack_require__(3);
+	const CONSTANTS = __webpack_require__(2);
+	const Board = __webpack_require__(3);
 
 	class Game {
 	  constructor() {
@@ -185,9 +185,9 @@
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var CONSTANTS = __webpack_require__(2);
-	var Coin = __webpack_require__(4);
-	var Star = __webpack_require__(5);
+	const CONSTANTS = __webpack_require__(2);
+	const Coin = __webpack_require__(4);
+	const Star = __webpack_require__(5);
 
 	class Board {
 	  constructor(columns, rows, level) {
@@ -481,7 +481,7 @@
 	    this.column = column;
 	    this.row = row;
 
-	    createjs.Tween.get(this.shape, {override:true})
+	    createjs.Tween.get(this.shape, {override: true})
 	      .to({x: this.pixelX(), y: this.pixelY()}, 200);
 	  }
 
@@ -522,7 +522,7 @@
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Coin = __webpack_require__(4);
+	const Coin = __webpack_require__(4);
 
 	class Star extends Coin {
 	  constructor(column, row) {

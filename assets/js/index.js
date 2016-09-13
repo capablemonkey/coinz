@@ -2,7 +2,7 @@
 
 window.stage = new createjs.Stage('canvas');
 
-var Game = require('./game.js');
+const Game = require('./game.js');
 
 window.game = new Game();
 

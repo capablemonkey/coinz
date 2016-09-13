@@ -1,5 +1,5 @@
-var CONSTANTS = require('./constants.js');
-var Board = require('./board.js');
+const CONSTANTS = require('./constants.js');
+const Board = require('./board.js');
 
 class Game {
   constructor() {
