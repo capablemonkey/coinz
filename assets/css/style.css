@@ -11,7 +11,7 @@ h3 {
   text-align: center;
 }
 
-.container {
+#container {
   border: 2px;
   border-style: solid;
   width: 700px;
@@ -19,5 +19,3 @@ h3 {
   margin-left: auto;
   margin-right: auto;
 
-#canvas {
-}

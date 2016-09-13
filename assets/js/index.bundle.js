@@ -58,7 +58,23 @@
 	  createjs.Ticker.addEventListener("tick", window.stage);
 	  window.stage.enableMouseOver(20);
 
+	  resize();
+
+	  window.addEventListener('resize', () => {
+	    resize();
+	  });
+
 	  window.game.initializeBoard();
+	}
+
+	function resize() {
+	  let ratioX = (window.innerWidth * .8) / 700;
+	  let ratioY = (window.innerHeight * .8) / 800;
+	  let scale = _.min([ratioX, ratioY, 1.0]);
+	  window.stage.scaleX = scale;
+	  window.stage.scaleY = scale;
+	  document.getElementById('container').style.width = `${scale * 700}px`;
+	  document.getElementById('container').style.height = `${scale * 800}px`;
 	}
 
 	init();
