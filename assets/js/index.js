@@ -18,7 +18,7 @@ function init() {
     resize();
   });
 
-  window.game.initializeBoard();
+  window.game.initializeStartScreen();
 }
 
 function resize() {

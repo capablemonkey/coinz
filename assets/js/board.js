@@ -10,23 +10,27 @@ class Board {
 
     // 2D array: coins[x][y]
     this.coins = Array(columns).fill(null).map(() => new Array(rows).fill(null));
+  }
 
+  initialize(rowsToCreate) {
     const topBoundary = new createjs.Shape();
     topBoundary
       .graphics
       .beginFill('black')
       .drawRect(0, 50, 700, 3);
     window.stage.addChild(topBoundary);
-  }
 
-  initialize(rowsToCreate) {
     _(rowsToCreate).times(() => this._addRow());
     this._moveCoins();
 
-    // setInterval(() => {
-    //   this._loseOrAddRow();
-    //   this._moveCoins();
-    // }, 3000);
+    if (window.game.mode === CONSTANTS.MODES.SPEED) {
+      // TODO... move this to Game.
+      setInterval(() => {
+      this._loseOrAddRow();
+      this._moveCoins();
+    }, 3000);
+    }
+    
   }
 
   toggleHighlightCoinGroup(coin) {
@@ -65,7 +69,7 @@ class Board {
 
     window.game.turn++;
 
-    if (window.game.turn % 3 === 0) {
+    if (window.game.mode === CONSTANTS.MODES.PUZZLE && window.game.turn % 3 === 0) {
       this._loseOrAddRow();
     }
 

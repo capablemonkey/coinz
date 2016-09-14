@@ -32,5 +32,15 @@ module.exports = {
   },
 
   TIME_LIMIT: 180,
+
+  STATES: {
+    START_SCREEN: 'intro',
+    IN_GAME: 'in_game',
+    GAME_OVER: 'game_over'
+  },
+
+  MODES: {
+    PUZZLE: 'puzzle',
+    SPEED: 'speed'
   }
 };

@@ -8,8 +8,9 @@ class Game {
     this.stars = 0;
     this.turn = 0;
     this.timeLeft = CONSTANTS.TIME_LIMIT;
+    this.state = CONSTANTS.STATES.START_SCREEN;
 
-    setInterval(() => {
+    this.ticker = setInterval(() => {
       this.timeLeft -= 1;
       this.updateStats();
       if (this.timeLeft <= 0) {
@@ -19,22 +20,32 @@ class Game {
 
     this.mode = 'puzzle';
 
-    this.texts = {
-      score: this._createText("bold 30px Helvetica", "#ff7700", 10, 30),
-      level: this._createText("30px Helvetica", "#ff7700", 140, 30),
-      timer: this._createText("30px Helvetica", "#ff7700", 320, 30),
-      stars: this._createText("30px Helvetica", "#ff7700", 550, 30)
-    };
+    this.texts = {};
 
     this.board = new Board(CONSTANTS.COLUMNS, CONSTANTS.ROWS, 1);
   }
 
   initializeStartScreen() {
+    this.texts = {
+      puzzle: this._createText('puzzle mode', 'bold 30px Helvetica', '#ff7700', 250, 300),
+      speed: this._createText('speed mode', 'bold 30px Helvetica', '#ff7700', 250, 500)
+    };
 
+    this.texts.puzzle.on('click', event => {
+      this.mode = 'puzzle';
+      this.initializeBoard();
+    });
+
+    this.texts.speed.on('click', event => {
+      this.mode = 'speed';
+      this.initializeBoard();
+    });
+
+    this.state = CONSTANTS.STATES.START_SCREEN;
   }
 
-  _createText(style, color, x, y) {
-    const control = new createjs.Text('', style, color);
+  _createText(text, style, color, x, y) {
+    const control = new createjs.Text(text, style, color);
     control.x = x;
     control.y = y;
     control.textBaseline = 'alphabetic';
@@ -44,7 +55,18 @@ class Game {
   }
 
   initializeBoard() {
+    window.stage.removeAllChildren();
     this.board.initialize(CONSTANTS.STARTING_ROWS);
+
+    this.state = CONSTANTS.STATES.IN_GAME;
+
+    this.texts = {
+      score: this._createText('', 'bold 30px Helvetica', '#ff7700', 10, 30),
+      level: this._createText('', '30px Helvetica', '#ff7700', 140, 30),
+      timer: this._createText('', '30px Helvetica', '#ff7700', 320, 30),
+      stars: this._createText('', '30px Helvetica', '#ff7700', 550, 30)
+    };
+
     this.updateStats();
   }
 
@@ -83,7 +105,11 @@ class Game {
   }
 
   gameOver() {
+    clearInterval(this.ticker);
+    window.stage.removeAllEventListeners();  // TODO: this isn't the right method...
+    this.state = CONSTANTS.STATES.GAME_OVER;
     alert('GAME OVER');
+
   }
 
   _formattedTime() {
