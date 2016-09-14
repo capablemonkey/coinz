@@ -6,7 +6,6 @@ class Board {
   constructor(columns, rows, level) {
     this.rows = rows;
     this.columns = columns;
-    this.turn = 0;
     this.coinColors = _.values(CONSTANTS.COLORS).slice(0, CONSTANTS.LEVEL_COIN_COLORS[level]);
 
     // 2D array: coins[x][y]
@@ -49,18 +48,24 @@ class Board {
     }
 
     // Pop any stars above:
+    // TODO: fix bug here: if coin group has n stars and m stars are needed to
+    // advance to the next level, n-m stars carry over to the next level
     coinChain.forEach(c => this._popStarAbove(c));
 
     // Remove coins:
     coinChain.forEach(c => this.removeCoin(c));
 
+    // TODO: fix bug -- we should return here if the level has progressed
+    // otherwise, we'll increment the next level's turn; or add a new phantom row
+    // to the next level...
+
     this._gravity();
 
     window.game.incrementScore(coinChain.length * 10);
 
-    this.turn++;
+    window.game.turn++;
 
-    if (this.turn % 3 === 0) {
+    if (window.game.turn % 3 === 0) {
       this._loseOrAddRow();
     }
 

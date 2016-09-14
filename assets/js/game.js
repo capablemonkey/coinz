@@ -6,6 +6,8 @@ class Game {
     this.level = 1;
     this.score = 0;
     this.stars = 0;
+    this.turn = 0;
+
 
     this.texts = {
       score: new createjs.Text(0, "bold 30px Helvetica", "#ff7700"),
@@ -50,6 +52,7 @@ class Game {
   nextLevel() {
     this.level++;
     this.stars = 0;
+    this.turn = 0;
 
     this.board.destroy();
     this.board = new Board(CONSTANTS.COLUMNS, CONSTANTS.ROWS, this.level);
