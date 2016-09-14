@@ -96,14 +96,6 @@
 	    this.timeLeft = CONSTANTS.TIME_LIMIT;
 	    this.state = CONSTANTS.STATES.START_SCREEN;
 
-	    this.ticker = setInterval(() => {
-	      this.timeLeft -= 1;
-	      this.updateStats();
-	      if (this.timeLeft <= 0) {
-	        this.gameOver();
-	      }
-	    }, 1000);
-
 	    this.mode = 'puzzle';
 
 	    this.texts = {};
@@ -119,12 +111,12 @@
 
 	    this.texts.puzzle.on('click', event => {
 	      this.mode = 'puzzle';
-	      this.initializeBoard();
+	      this.startGame();
 	    });
 
 	    this.texts.speed.on('click', event => {
 	      this.mode = 'speed';
-	      this.initializeBoard();
+	      this.startGame();
 	    });
 
 	    this.state = CONSTANTS.STATES.START_SCREEN;
@@ -140,11 +132,23 @@
 	    return control;
 	  }
 
+	  startGame() {
+	    this.state = CONSTANTS.STATES.IN_GAME;
+
+	    this.ticker = setInterval(() => {
+	      this.timeLeft -= 1;
+	      this.updateStats();
+	      if (this.timeLeft <= 0) {
+	        this.gameOver();
+	      }
+	    }, 1000);
+
+	    this.initializeBoard();
+	  }
+
 	  initializeBoard() {
 	    window.stage.removeAllChildren();
 	    this.board.initialize(CONSTANTS.STARTING_ROWS);
-
-	    this.state = CONSTANTS.STATES.IN_GAME;
 
 	    this.texts = {
 	      score: this._createText('', 'bold 30px Helvetica', '#ff7700', 10, 30),
