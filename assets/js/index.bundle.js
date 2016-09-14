@@ -94,8 +94,9 @@
 	    this.stars = 0;
 	    this.turn = 0;
 	    this.timeLeft = CONSTANTS.TIME_LIMIT;
+	    this.state = CONSTANTS.STATES.START_SCREEN;
 
-	    setInterval(() => {
+	    this.ticker = setInterval(() => {
 	      this.timeLeft -= 1;
 	      this.updateStats();
 	      if (this.timeLeft <= 0) {
@@ -106,34 +107,27 @@
 	    this.mode = 'puzzle';
 
 	    this.texts = {
-	      score: new createjs.Text(0, "bold 30px Helvetica", "#ff7700"),
-	      level: new createjs.Text('lvl 1', "30px Helvetica", "#ff7700"),
-	      timer: new createjs.Text('starz', "30px Helvetica", "#ff7700"),
-	      stars: new createjs.Text('starz', "30px Helvetica", "#ff7700")
+	      score: this._createText("bold 30px Helvetica", "#ff7700", 10, 30),
+	      level: this._createText("30px Helvetica", "#ff7700", 140, 30),
+	      timer: this._createText("30px Helvetica", "#ff7700", 320, 30),
+	      stars: this._createText("30px Helvetica", "#ff7700", 550, 30)
 	    };
 
-	    this.texts.score.x = 10;
-	    this.texts.score.y = 30;
-	    this.texts.score.textBaseline = "alphabetic";
-
-	    this.texts.level.x = 180;
-	    this.texts.level.y = 30;
-	    this.texts.level.textBaseline = "alphabetic";
-
-	    this.texts.timer.x = 300;
-	    this.texts.timer.y = 30;
-	    this.texts.timer.textBaseline = "alphabetic";
-
-	    this.texts.stars.x = 550;
-	    this.texts.stars.y = 30;
-	    this.texts.stars.textBaseline = "alphabetic";
-
-	    window.stage.addChild(this.texts.score);
-	    window.stage.addChild(this.texts.level);
-	    window.stage.addChild(this.texts.timer);
-	    window.stage.addChild(this.texts.stars);
-
 	    this.board = new Board(CONSTANTS.COLUMNS, CONSTANTS.ROWS, 1);
+	  }
+
+	  initializeStartScreen() {
+
+	  }
+
+	  _createText(style, color, x, y) {
+	    const control = new createjs.Text('', style, color);
+	    control.x = x;
+	    control.y = y;
+	    control.textBaseline = 'alphabetic';
+
+	    window.stage.addChild(control);
+	    return control;
 	  }
 
 	  initializeBoard() {
@@ -176,7 +170,10 @@
 	  }
 
 	  gameOver() {
+	    clearInterval(this.ticker);
+	    window.stage.removeAllEventListeners();  // TODO: this isn't the right method...
 	    alert('GAME OVER');
+
 	  }
 
 	  _formattedTime() {
@@ -227,6 +224,12 @@
 
 	  TIME_LIMIT: 180,
 
+	  STATES: {
+	    START_SCREEN: 'intro',
+	    IN_GAME: 'in_game',
+	    GAME_OVER: 'game_over'
+	  },
+
 	  MODES: {
 	    PUZZLE: 'puzzle',
 	    SPEED: 'speed'
@@ -263,10 +266,14 @@
 	    _(rowsToCreate).times(() => this._addRow());
 	    this._moveCoins();
 
-	    // setInterval(() => {
-	    //   this._loseOrAddRow();
-	    //   this._moveCoins();
-	    // }, 3000);
+	    if (window.game.mode === CONSTANTS.MODES.SPEED) {
+	      // TODO... move this to Game.
+	      setInterval(() => {
+	      this._loseOrAddRow();
+	      this._moveCoins();
+	    }, 3000);
+	    }
+	    
 	  }
 
 	  toggleHighlightCoinGroup(coin) {
