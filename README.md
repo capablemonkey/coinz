@@ -30,16 +30,13 @@ Then open `index.html` in your web browser.
 ## TODO:
 
 - exponential bonus score for big groups
-- add timer mode to both game types
-- game type: speed - rows advance every third turn
-- game type: puzzle - rows advance every X seconds
 - game over screen with play again button
 - add coin assets
 - add score assets
 - add animation for score increase
-- add start screen, concept of multiple, layered stages
 
 done:
+
 
 - add animations for coin movement
 - transition from fabric.js to easel.js
@@ -53,3 +50,7 @@ done:
 - highlight coin groups on mouse over
 - break out monolithic index.js into modules
 - make the canvas scale based on viewing resolution
+- add timer mode to both game types
+- game type: speed - rows advance every X seconds
+- game type: puzzle - rows advance every third turn
+- add start screen
