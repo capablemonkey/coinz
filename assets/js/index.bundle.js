@@ -92,10 +92,23 @@
 	    this.level = 1;
 	    this.score = 0;
 	    this.stars = 0;
+	    this.turn = 0;
+	    this.timeLeft = CONSTANTS.TIME_LIMIT;
+
+	    setInterval(() => {
+	      this.timeLeft -= 1;
+	      this.updateStats();
+	      if (this.timeLeft <= 0) {
+	        this.gameOver();
+	      }
+	    }, 1000);
+
+	    this.mode = 'puzzle';
 
 	    this.texts = {
 	      score: new createjs.Text(0, "bold 30px Helvetica", "#ff7700"),
 	      level: new createjs.Text('lvl 1', "30px Helvetica", "#ff7700"),
+	      timer: new createjs.Text('starz', "30px Helvetica", "#ff7700"),
 	      stars: new createjs.Text('starz', "30px Helvetica", "#ff7700")
 	    };
 
@@ -103,16 +116,21 @@
 	    this.texts.score.y = 30;
 	    this.texts.score.textBaseline = "alphabetic";
 
-	    this.texts.level.x = 280;
+	    this.texts.level.x = 180;
 	    this.texts.level.y = 30;
 	    this.texts.level.textBaseline = "alphabetic";
+
+	    this.texts.timer.x = 300;
+	    this.texts.timer.y = 30;
+	    this.texts.timer.textBaseline = "alphabetic";
 
 	    this.texts.stars.x = 550;
 	    this.texts.stars.y = 30;
 	    this.texts.stars.textBaseline = "alphabetic";
 
-	    window.stage.addChild(this.texts.level);
 	    window.stage.addChild(this.texts.score);
+	    window.stage.addChild(this.texts.level);
+	    window.stage.addChild(this.texts.timer);
 	    window.stage.addChild(this.texts.stars);
 
 	    this.board = new Board(CONSTANTS.COLUMNS, CONSTANTS.ROWS, 1);
@@ -136,6 +154,7 @@
 	  nextLevel() {
 	    this.level++;
 	    this.stars = 0;
+	    this.turn = 0;
 
 	    this.board.destroy();
 	    this.board = new Board(CONSTANTS.COLUMNS, CONSTANTS.ROWS, this.level);
@@ -150,9 +169,20 @@
 	  updateStats() {
 	    this.texts.score.text = this.score;
 	    this.texts.level.text = `lvl ${this.level}`;
+	    this.texts.timer.text = this._formattedTime();
 	    this.texts.stars.text = `${this.stars} / ${CONSTANTS.LEVEL_THRESHOLD[this.level]} stars`;
 
 	    window.stage.update();
+	  }
+
+	  gameOver() {
+	    alert('GAME OVER');
+	  }
+
+	  _formattedTime() {
+	    const seconds = this.timeLeft % 60;
+	    const minutes = (this.timeLeft - seconds) / 60;
+	    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 	  }
 	}
 
@@ -193,6 +223,13 @@
 	    2: 4,
 	    3: 5,
 	    4: 5
+	  },
+
+	  TIME_LIMIT: 180,
+
+	  MODES: {
+	    PUZZLE: 'puzzle',
+	    SPEED: 'speed'
 	  }
 	};
 
@@ -209,7 +246,6 @@
 	  constructor(columns, rows, level) {
 	    this.rows = rows;
 	    this.columns = columns;
-	    this.turn = 0;
 	    this.coinColors = _.values(CONSTANTS.COLORS).slice(0, CONSTANTS.LEVEL_COIN_COLORS[level]);
 
 	    // 2D array: coins[x][y]
@@ -252,18 +288,24 @@
 	    }
 
 	    // Pop any stars above:
+	    // TODO: fix bug here: if coin group has n stars and m stars are needed to
+	    // advance to the next level, n-m stars carry over to the next level
 	    coinChain.forEach(c => this._popStarAbove(c));
 
 	    // Remove coins:
 	    coinChain.forEach(c => this.removeCoin(c));
 
+	    // TODO: fix bug -- we should return here if the level has progressed
+	    // otherwise, we'll increment the next level's turn; or add a new phantom row
+	    // to the next level...
+
 	    this._gravity();
 
 	    window.game.incrementScore(coinChain.length * 10);
 
-	    this.turn++;
+	    window.game.turn++;
 
-	    if (this.turn % 3 === 0) {
+	    if (window.game.turn % 3 === 0) {
 	      this._loseOrAddRow();
 	    }
 
@@ -276,8 +318,7 @@
 
 	  _loseOrAddRow() {
 	    if (this._anyRowAtPeak()) {
-	      alert('GAME OVER');
-	      console.log('window.game OVER');
+	      window.game.gameOver();
 	    } else {
 	      this._addRow();
 	    }

@@ -78,8 +78,7 @@ class Board {
 
   _loseOrAddRow() {
     if (this._anyRowAtPeak()) {
-      alert('GAME OVER');
-      console.log('window.game OVER');
+      window.game.gameOver();
     } else {
       this._addRow();
     }

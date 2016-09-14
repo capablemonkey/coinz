@@ -29,5 +29,8 @@ module.exports = {
     2: 4,
     3: 5,
     4: 5
+  },
+
+  TIME_LIMIT: 180,
   }
 };
