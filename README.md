@@ -2,6 +2,15 @@
 
 a html5 canvas game: https://coinz.gordn.org
 
+### How to play
+
+0. click groups of adjacent similar color coins of size > 3
+1. bigger groups give you bigger bonuses (TODO)
+2. collect stars by clicking on the coin group underneath them
+3. stars give bonuses
+4. collect enough stars to progress to the next level
+5. new levels introduce more colors to the board and require more stars to pass
+
 ## Development
 
 Install dev dependencies:
@@ -21,14 +30,14 @@ Then open `index.html` in your web browser.
 ## TODO:
 
 - exponential bonus score for big groups
-- add timer mode
-- game type: race against the clock - total game time limit, rows advance every third turn
-- game type: original - rows advance every X seconds
+- add timer mode to both game types
+- game type: speed - rows advance every third turn
+- game type: puzzle - rows advance every X seconds
 - game over screen with play again button
-- make the canvas scale based on viewing resolution
 - add coin assets
 - add score assets
 - add animation for score increase
+- add start screen, concept of multiple, layered stages
 
 done:
 
@@ -43,3 +52,4 @@ done:
 - add animation for coin click
 - highlight coin groups on mouse over
 - break out monolithic index.js into modules
+- make the canvas scale based on viewing resolution
