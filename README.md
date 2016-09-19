@@ -26,31 +26,3 @@ webpack
 ```
 
 Then open `index.html` in your web browser.
-
-## TODO:
-
-- exponential bonus score for big groups
-- game over screen with play again button
-- add coin assets
-- add score assets
-- add animation for score increase
-
-done:
-
-
-- add animations for coin movement
-- transition from fabric.js to easel.js
-- refactor coordinate system to use bottom left origin = (0,0)
-- stars are used to track level progression
-- levels
-- harder levels have more colors
-- reset board on new level
-- stars give bonuses
-- add animation for coin click
-- highlight coin groups on mouse over
-- break out monolithic index.js into modules
-- make the canvas scale based on viewing resolution
-- add timer mode to both game types
-- game type: speed - rows advance every X seconds
-- game type: puzzle - rows advance every third turn
-- add start screen
