@@ -26,11 +26,14 @@ class Board {
     if (window.game.mode === CONSTANTS.MODES.SPEED) {
       // TODO... move this to Game.
       setInterval(() => {
-      this._loseOrAddRow();
-      this._moveCoins();
-    }, 3000);
+        this._loseOrAddRow();
+        this._moveCoins();
+      }, 3000);
     }
-    
+  }
+
+  _calculateScore(numberOfCoins) {
+    return Math.pow(numberOfCoins, 2) - numberOfCoins * 5 + 15;
   }
 
   toggleHighlightCoinGroup(coin) {
@@ -65,7 +68,7 @@ class Board {
 
     this._gravity();
 
-    window.game.incrementScore(coinChain.length * 10);
+    window.game.incrementScore(this._calculateScore(coinChain.length));
 
     window.game.turn++;
 
