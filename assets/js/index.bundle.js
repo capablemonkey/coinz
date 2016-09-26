@@ -160,14 +160,17 @@
 	    this.updateStats();
 	  }
 
-	  collectStar() {
-	    this.incrementScore(200);
+	  collectStars(starsCount) {
+	    this.incrementScore(starsCount * 200);
 
-	    this.stars++;
+	    this.stars += starsCount;
 	    if (this.stars >= CONSTANTS.LEVEL_THRESHOLD[this.level]) {
-	      return this.nextLevel();
+	      this.nextLevel();
+	      return true;
 	    }
 	    this.updateStats();
+
+	    return false;
 	  }
 
 	  nextLevel() {
@@ -236,7 +239,7 @@
 
 	  LEVEL_THRESHOLD: {
 	    1: 3,
-	    2: 4,
+	    2: 3,
 	    3: 4,
 	    4: 5
 	  },
@@ -324,16 +327,17 @@
 	    }
 
 	    // Pop any stars above:
-	    // TODO: fix bug here: if coin group has n stars and m stars are needed to
-	    // advance to the next level, n-m stars carry over to the next level
-	    coinChain.forEach(c => this._popStarAbove(c));
+	    let starsCount = coinChain
+	      .map(c => this._popStarAbove(c))
+	      .reduce((count, star) => count + (star === true ? 1 : 0));
+
+	    let levelIsFinished = window.game.collectStars(starsCount);
+	    if (levelIsFinished) {
+	      return;
+	    }
 
 	    // Remove coins:
 	    coinChain.forEach(c => this.removeCoin(c));
-
-	    // TODO: fix bug -- we should return here if the level has progressed
-	    // otherwise, we'll increment the next level's turn; or add a new phantom row
-	    // to the next level...
 
 	    this._gravity();
 
@@ -476,13 +480,15 @@
 	    let above = this._getCoinAt(coin.column, coin.row + 1);
 
 	    if (_.isNull(above)) {
-	      return;
+	      return false;
 	    }
 
 	    if (above.star === true) {
-	      window.game.collectStar();
 	      this.removeCoin(above);
+	      return true;
 	    }
+
+	    return false;
 	  }
 
 	  removeCoin(coin) {

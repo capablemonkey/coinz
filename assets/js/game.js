@@ -74,14 +74,17 @@ class Game {
     this.updateStats();
   }
 
-  collectStar() {
-    this.incrementScore(200);
+  collectStars(starsCount) {
+    this.incrementScore(starsCount * 200);
 
-    this.stars++;
+    this.stars += starsCount;
     if (this.stars >= CONSTANTS.LEVEL_THRESHOLD[this.level]) {
-      return this.nextLevel();
+      this.nextLevel();
+      return true;
     }
     this.updateStats();
+
+    return false;
   }
 
   nextLevel() {
